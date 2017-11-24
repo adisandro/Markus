@@ -1,70 +1,55 @@
-dp.sh.Brushes.Xml = function()
+;(function()
 {
-	this.CssClass = 'dp-xml';
-	this.Style =	'.dp-xml .cdata { color: #ff1493; }' +
-					'.dp-xml .tag, .dp-xml .tag-name { color: #069; font-weight: bold; }' +
-					'.dp-xml .attribute { color: red; }' +
-					'.dp-xml .attribute-value { color: blue; }';
-}
+	// CommonJS
+	SyntaxHighlighter = SyntaxHighlighter || (typeof require !== 'undefined'? require('shCore').SyntaxHighlighter : null);
 
-dp.sh.Brushes.Xml.prototype	= new dp.sh.Highlighter();
-dp.sh.Brushes.Xml.Aliases	= ['xml', 'xhtml', 'xslt', 'html', 'xhtml'];
-
-dp.sh.Brushes.Xml.prototype.ProcessRegexList = function()
-{
-	function push(array, value)
+	function Brush()
 	{
-		array[array.length] = value;
-	}
-	
-	/* If only there was a way to get index of a group within a match, the whole XML
-	   could be matched with the expression looking something like that:
-	
-	   (<!\[CDATA\[\s*.*\s*\]\]>)
-	   | (<!--\s*.*\s*?-->)
-	   | (<)*(\w+)*\s*(\w+)\s*=\s*(".*?"|'.*?'|\w+)(/*>)*
-	   | (</?)(.*?)(/?>)
-	*/
-	var index	= 0;
-	var match	= null;
-	var regex	= null;
-
-	// Match CDATA in the following format <![ ... [ ... ]]>
-	// (\&lt;|<)\!\[[\w\s]*?\[(.|\s)*?\]\](\&gt;|>)
-	this.GetMatches(new RegExp('(\&lt;|<)\\!\\[[\\w\\s]*?\\[(.|\\s)*?\\]\\](\&gt;|>)', 'gm'), 'cdata');
-	
-	// Match comments
-	// (\&lt;|<)!--\s*.*?\s*--(\&gt;|>)
-	this.GetMatches(new RegExp('(\&lt;|<)!--\\s*.*?\\s*--(\&gt;|>)', 'gm'), 'comments');
-
-	// Match attributes and their values
-	// (:|\w+)\s*=\s*(".*?"|\'.*?\'|\w+)*
-	regex = new RegExp('([:\\w-\.]+)\\s*=\\s*(".*?"|\'.*?\'|\\w+)*|(\\w+)', 'gm'); // Thanks to Tomi Blinnikka of Yahoo! for fixing namespaces in attributes
-	while((match = regex.exec(this.code)) != null)
-	{
-		if(match[1] == null)
+		function process(match, regexInfo)
 		{
-			continue;
-		}
-			
-		push(this.matches, new dp.sh.Match(match[1], match.index, 'attribute'));
-	
-		// if xml is invalid and attribute has no property value, ignore it	
-		if(match[2] != undefined)
-		{
-			push(this.matches, new dp.sh.Match(match[2], match.index + match[0].indexOf(match[2]), 'attribute-value'));
-		}
-	}
+			var constructor = SyntaxHighlighter.Match,
+				code = match[0],
+				tag = XRegExp.exec(code, XRegExp('(&lt;|<)[\\s\\/\\?!]*(?<name>[:\\w-\\.]+)', 'xg')),
+				result = []
+				;
 
-	// Match opening and closing tag brackets
-	// (\&lt;|<)/*\?*(?!\!)|/*\?*(\&gt;|>)
-	this.GetMatches(new RegExp('(\&lt;|<)/*\\?*(?!\\!)|/*\\?*(\&gt;|>)', 'gm'), 'tag');
+			if (match.attributes != null)
+			{
+				var attributes,
+					pos = 0,
+					regex = XRegExp('(?<name> [\\w:.-]+)' +
+									'\\s*=\\s*' +
+									'(?<value> ".*?"|\'.*?\'|\\w+)',
+									'xg');
 
-	// Match tag names
-	// (\&lt;|<)/*\?*\s*(\w+)
-	regex = new RegExp('(?:\&lt;|<)/*\\?*\\s*([:\\w-\.]+)', 'gm');
-	while((match = regex.exec(this.code)) != null)
-	{
-		push(this.matches, new dp.sh.Match(match[1], match.index + match[0].indexOf(match[1]), 'tag-name'));
-	}
-}
+				while ((attributes = XRegExp.exec(code, regex, pos)) != null)
+				{
+					result.push(new constructor(attributes.name, match.index + attributes.index, 'color1'));
+					result.push(new constructor(attributes.value, match.index + attributes.index + attributes[0].indexOf(attributes.value), 'string'));
+					pos = attributes.index + attributes[0].length;
+				}
+			}
+
+			if (tag != null)
+				result.push(
+					new constructor(tag.name, match.index + tag[0].indexOf(tag.name), 'keyword')
+				);
+
+			return result;
+		}
+
+		this.regexList = [
+			{ regex: XRegExp('(\\&lt;|<)\\!\\[[\\w\\s]*?\\[(.|\\s)*?\\]\\](\\&gt;|>)', 'gm'),			css: 'color2' },	// <![ ... [ ... ]]>
+			{ regex: SyntaxHighlighter.regexLib.xmlComments,												css: 'comments' },	// <!-- ... -->
+			{ regex: XRegExp('(&lt;|<)[\\s\\/\\?!]*(\\w+)(?<attributes>.*?)[\\s\\/\\?]*(&gt;|>)', 'sg'), func: process }
+		];
+	};
+
+	Brush.prototype	= new SyntaxHighlighter.Highlighter();
+	Brush.aliases	= ['xml', 'xhtml', 'xslt', 'html', 'plist'];
+
+	SyntaxHighlighter.brushes.Xml = Brush;
+
+	// CommonJS
+	typeof(exports) != 'undefined' ? exports.Brush = Brush : null;
+})();

@@ -1,28 +1,41 @@
-dp.sh.Brushes.Java = function()
+;(function()
 {
-	var keywords =	'abstract assert boolean break byte case catch char class const ' +
-			'continue default do double else enum extends ' +
-			'false final finally float for goto if implements import ' +
-			'instanceof int interface long native new null ' +
-			'package private protected public return ' +
-			'short static strictfp super switch synchronized this throw throws true ' +
-			'transient try void volatile while';
+	// CommonJS
+	SyntaxHighlighter = SyntaxHighlighter || (typeof require !== 'undefined'? require('shCore').SyntaxHighlighter : null);
 
-	this.regexList = [
-		{ regex: dp.sh.RegexLib.SingleLineCComments,							css: 'comment' },		// one line comments
-		{ regex: dp.sh.RegexLib.MultiLineCComments,								css: 'comment' },		// multiline comments
-		{ regex: dp.sh.RegexLib.DoubleQuotedString,								css: 'string' },		// strings
-		{ regex: dp.sh.RegexLib.SingleQuotedString,								css: 'string' },		// strings
-		{ regex: new RegExp('\\b([\\d]+(\\.[\\d]+)?|0x[a-f0-9]+)\\b', 'gi'),	css: 'number' },		// numbers
-		{ regex: new RegExp('(?!\\@interface\\b)\\@[\\$\\w]+\\b', 'g'),			css: 'annotation' },	// annotation @anno
-		{ regex: new RegExp('\\@interface\\b', 'g'),							css: 'keyword' },		// @interface keyword
-		{ regex: new RegExp(this.GetKeywords(keywords), 'gm'),					css: 'keyword' }		// java keyword
-		];
+	function Brush()
+	{
+		var keywords =	'abstract assert boolean break byte case catch char class const ' +
+						'continue default do double else enum extends ' +
+						'false final finally float for goto if implements import ' +
+						'instanceof int interface long native new null ' +
+						'package private protected public return ' +
+						'short static strictfp super switch synchronized this throw throws true ' +
+						'transient try void volatile while';
 
-	this.CssClass = 'dp-j';
-	this.Style =	'.dp-j .annotation { color: #646464; }' +
-					'.dp-j .number { color: #C00000; }';
-}
+		this.regexList = [
+			{ regex: SyntaxHighlighter.regexLib.singleLineCComments,	css: 'comments' },		// one line comments
+			{ regex: /\/\*([^\*][\s\S]*?)?\*\//gm,						css: 'comments' },	 	// multiline comments
+			{ regex: /\/\*(?!\*\/)\*[\s\S]*?\*\//gm,					css: 'preprocessor' },	// documentation comments
+			{ regex: SyntaxHighlighter.regexLib.doubleQuotedString,		css: 'string' },		// strings
+			{ regex: SyntaxHighlighter.regexLib.singleQuotedString,		css: 'string' },		// strings
+			{ regex: /\b([\d]+(\.[\d]+)?|0x[a-f0-9]+)\b/gi,				css: 'value' },			// numbers
+			{ regex: /(?!\@interface\b)\@[\$\w]+\b/g,					css: 'color1' },		// annotation @anno
+			{ regex: /\@interface\b/g,									css: 'color2' },		// @interface keyword
+			{ regex: new RegExp(this.getKeywords(keywords), 'gm'),		css: 'keyword' }		// java keyword
+			];
 
-dp.sh.Brushes.Java.prototype	= new dp.sh.Highlighter();
-dp.sh.Brushes.Java.Aliases	= ['java'];
+		this.forHtmlScript({
+			left	: /(&lt;|<)%[@!=]?/g, 
+			right	: /%(&gt;|>)/g 
+		});
+	};
+
+	Brush.prototype	= new SyntaxHighlighter.Highlighter();
+	Brush.aliases	= ['java'];
+
+	SyntaxHighlighter.brushes.Java = Brush;
+
+	// CommonJS
+	typeof(exports) != 'undefined' ? exports.Brush = Brush : null;
+})();
