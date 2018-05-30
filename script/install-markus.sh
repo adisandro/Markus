@@ -22,12 +22,8 @@ sudo gem install bundler
 echo "- - - Installing Git - - -"
 sudo apt-get install -y git
 
-# Install postgres (note: on 16.04+, can install postgres through the standard repository)
-echo "- - - Installing Postgres - - -"
-sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main" >> /etc/apt/sources.list.d/pgdg.list'
-wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-sudo apt-get update
-sudo apt-get install -y postgresql-9.5 postgresql-client-9.5 postgresql-contrib-9.5 libpq-dev
+# Install postgres
+sudo apt-get install -y postgresql postgresql-client postgresql-contrib libpq-dev
 
 # Install node
 echo "- - - Installing Node, Step 1 - - -"
