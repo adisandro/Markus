@@ -7,9 +7,8 @@
 // To reference this file, add <%= javascript_pack_tag 'application' %> to the appropriate
 // layout file, like app/views/layouts/application.html.erb
 
-// jquery (should be the first to be loaded, as many other libs depend on it)
-import $ from 'jquery/src/jquery';
-window.$ = window.jQuery = $;
+// jquery-ui (only needed components)
+import 'jquery-ui/ui/widgets/datepicker';
 
 // vendor libraries
 import 'javascripts/jquery.easyModal';
