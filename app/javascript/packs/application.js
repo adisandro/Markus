@@ -7,11 +7,12 @@
 // To reference this file, add <%= javascript_pack_tag 'application' %> to the appropriate
 // layout file, like app/views/layouts/application.html.erb
 
-// jquery-ui (only needed components)
+// jquery-ui (only components that are needed)
 import 'jquery-ui/ui/widgets/datepicker';
 
 // vendor libraries
 import 'javascripts/jquery.easyModal';
+import 'javascripts/jquery-ui-timepicker-addon';
 
 // marked (markdown support)
 import marked from 'marked';
