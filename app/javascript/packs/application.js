@@ -9,10 +9,15 @@
 
 // jquery-ui (only components that are needed)
 import 'jquery-ui/ui/widgets/datepicker';
+import 'jquery-ui/ui/widgets/draggable';
+import 'jquery-ui/ui/widgets/menu';
+import 'jquery-ui/ui/widgets/sortable';
+import 'jquery-ui/ui/widgets/tabs';
 
 // vendor libraries
 import 'javascripts/jquery.easyModal';
 import 'javascripts/jquery-ui-timepicker-addon';
+import 'javascripts/jquery.ui-contextmenu.min';
 
 // marked (markdown support)
 import marked from 'marked';
@@ -42,8 +47,11 @@ import 'javascripts/chart_config';
 import 'javascripts/help-system';
 import 'javascripts/layouts';
 import 'javascripts/menu';
+import 'javascripts/panes';
 import 'javascripts/react_config';
 import 'javascripts/redirect';
+import 'javascripts/Grader/tabs_boot';
+import 'javascripts/Results/context_menu';
 
 // assets that export vars/functions/classes
 // TODO: We shouldn't need to make everything global.

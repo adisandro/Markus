@@ -12,7 +12,7 @@
     * _annotations.js.erb (..\app\views\results\common\)
 
    */
-var annotation_context_menu = {
+window.annotation_context_menu = {
   setup: function(annot_path, result_id, assignment_id, file_dl_path) {
     var menu_items = {
       new_annotation: {
