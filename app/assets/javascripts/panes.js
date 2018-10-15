@@ -59,10 +59,13 @@ function calculate_bounds() {
 /* On page load: get DOM elements, calculate some stuff,
    and initialize the drag bar/columns.  */
 $(window).on('load', function() {
+  $panes = $('#panes');
+  if ($panes.length <= 0) {
+    return;
+  }
+  $drag  = $('#drag');
   left   = document.getElementById('left-pane');
   right  = document.getElementById('right-pane');
-  $panes = $('#panes');
-  $drag  = $('#drag');
   panes_width  = $panes.width();
   panes_offset = $panes.offset();
 
